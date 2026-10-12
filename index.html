@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Món Quà Tình Yêu Dành Riêng Cho Cậu 💖</title>
+  
+  <!-- Google Fonts: Quicksand & Dancing Script -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* =========================================================
+       1. CẤU HÌNH BIẾN MÀU & THIẾT LẬP CHUNG (DARK & PLUM THEME)
+       ========================================================= */
+    :root {
+      --bg-dark: #0a0a0d;
+      --bg-dark-card: rgba(18, 10, 15, 0.9);
+      --plum-dark: #4A0E17;
+      --plum-main: #8B0000;
+      --plum-burgundy: #670014;
+      --plum-glow: rgba(139, 0, 0, 0.65);
+      --pink-neon: #FF69B4;
+      --pink-hot: #FF1493;
+      --pink-soft: #FFB6C1;
+      --pink-glow: rgba(255, 105, 180, 0.55);
+      --text-glow-shadow: 0 0 8px #FF69B4, 0 0 18px #FF1493, 0 0 32px #8B0000;
+      --font-main: 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-handwriting: 'Dancing Script', cursive;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Đảm bảo trang web luôn cho phép cuộn tự do khi nội dung dài */
+    html {
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-dark);
+      overflow-x: hidden;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      width: 100%;
+      min-height: 100vh;
+      min-height: 100dvh;
+      background-color: var(--bg-dark);
+      font-family: var(--font-main);
+      color: #fff;
+      touch-action: manipulation;
+      overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      position: relative;
+    }
+
+    /* Thanh cuộn phong cách lãng mạn siêu mỏng */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(10, 10, 13, 0.85);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, var(--plum-main), var(--pink-neon));
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--pink-hot);
+    }
+
+    /* Hiệu ứng nền mờ huyền ảo đa lớp */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 50% 35%, rgba(103, 0, 20, 0.4) 0%, rgba(74, 14, 23, 0.22) 45%, rgba(10, 10, 13, 0.96) 85%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Nút bật/tắt nhạc nền ở góc trên bên phải */
+    .music-btn {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(74, 14, 23, 0.75);
+      border: 1.5px solid rgba(255, 105, 180, 0.4);
+      color: var(--pink-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      cursor: pointer;
+      z-index: 99;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), 0 0 10px rgba(255, 105, 180, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .music-btn:hover {
+      transform: scale(1.08);
+      border-color: var(--pink-neon);
+      box-shadow: 0 0 18px rgba(255, 105, 180, 0.7);
+    }
+
+    .music-btn.playing {
+      animation: musicRotate 4s linear infinite;
+      border-color: var(--pink-neon);
+      color: #fff;
+      box-shadow: 0 0 15px var(--pink-neon);
+    }
+
+    @keyframes musicRotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* =========================================================
+       2. CANVAS HIỆU ỨNG TRÁI TIM NỀN & PHÁO HOA
+       ========================================================= */
+    #canvasBackground {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* =========================================================
+       3. KHUNG CHÍNH ỨNG DỤNG (RESPONSIVE & TỰ CO GIÃN THEO CHIỀU CAO)
+       ========================================================= */
+    .app-container {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      min-height: 100vh;
+      min-height: 100dvh;
+      max-width: 440px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 30px 16px calc(55px + env(safe-area-inset-bottom, 20px));
+      box-sizing: border-box;
+    }
+
+    /* Card giao diện từng màn hình:
+       - Khi nội dung ngắn: tự căn giữa màn hình nhờ margin: auto 0.
+       - Khi nội dung dài: dãn tự nhiên từ trên xuống dưới, cho phép lướt cuộn đọc thoải mái.
+    */
+    .screen {
+      display: none;
+      width: 100%;
+      max-width: 400px;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1), 
+                  transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+      margin: auto 0;
+      position: relative;
+    }
+
+    .screen.active {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    /* =========================================================
+       4. TYPOGRAPHY & CHỮ PHÁT SÁNG NEON (GLOWING TEXT)
+       ========================================================= */
+    .neon-text {
+      color: #fff;
+      font-weight: 700;
+      text-shadow: var(--text-glow-shadow);
+      line-height: 1.5;
+    }
+
+    .neon-pink {
+      color: var(--pink-soft);
+      text-shadow: 0 0 10px var(--pink-neon), 0 0 20px var(--pink-hot);
+    }
+
+    .cursive-title {
+      font-family: var(--font-handwriting);
+      font-size: 2.2rem;
+      color: #fff;
+      text-shadow: 0 0 8px var(--pink-neon), 0 0 22px var(--pink-hot), 0 0 35px var(--plum-main);
+      margin-bottom: 12px;
+    }
+
+    /* Con trỏ hiệu ứng gõ phím */
+    .typewriter-cursor {
+      display: inline-block;
+      width: 2.5px;
+      height: 1.15em;
+      background-color: var(--pink-neon);
+      box-shadow: 0 0 10px var(--pink-neon), 0 0 18px var(--pink-hot);
+      margin-left: 3px;
+      vertical-align: middle;
+      animation: blinkCursor 0.85s infinite;
+    }
+
+    @keyframes blinkCursor {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* Nút bấm sang chảnh phát sáng */
+    .glow-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--plum-dark) 0%, var(--plum-main) 50%, var(--plum-burgundy) 100%);
+      color: #fff;
+      border: 1px solid rgba(255, 105, 180, 0.5);
+      border-radius: 50px;
+      padding: 13px 32px;
+      font-family: var(--font-main);
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      box-shadow: 0 4px 20px var(--plum-glow), 0 0 15px rgba(255, 105, 180, 0.35);
+      transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      margin-top: 22px;
+      margin-bottom: 8px;
+      flex-shrink: 0;
+    }
+
+    .glow-btn::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 182, 193, 0.3) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .glow-btn:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 6px 25px var(--plum-glow), 0 0 25px rgba(255, 105, 180, 0.6);
+      border-color: var(--pink-neon);
+    }
+
+    .glow-btn:hover::before {
+      opacity: 1;
+    }
+
+    .glow-btn:active {
+      transform: translateY(1px) scale(0.98);
+    }
+
+    /* =========================================================
+       5. MÀN HÌNH 1: LỄ MỞ ĐẦU (INTRO SCREEN)
+       ========================================================= */
+    .intro-card {
+      background: var(--bg-dark-card);
+      border: 1px solid rgba(255, 105, 180, 0.25);
+      border-radius: 28px;
+      padding: 34px 24px 30px;
+      width: 100%;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.75), 0 0 25px rgba(139, 0, 0, 0.35);
+    }
+
+    .avatar-wrapper {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      margin: 0 auto 22px;
+    }
+
+    .avatar-glow {
+      position: absolute;
+      top: -8px;
+      left: -8px;
+      right: -8px;
+      bottom: -8px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 105, 180, 0.4) 0%, rgba(139, 0, 0, 0.3) 50%, transparent 70%);
+      animation: avatarPulse 2.8s infinite ease-in-out;
+    }
+
+    @keyframes avatarPulse {
+      0%, 100% { transform: scale(0.98); opacity: 0.65; }
+      50% { transform: scale(1.08); opacity: 1; }
+    }
+
+    .intro-img {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 50%;
+      background: rgba(20, 10, 15, 0.9);
+      border: 2px solid rgba(255, 105, 180, 0.4);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+      animation: floatChibi 3.2s ease-in-out infinite;
+    }
+
+    @keyframes floatChibi {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-7px); }
+    }
+
+    .intro-text-box {
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 10px;
+    }
+
+    .intro-text-box h2 {
+      font-size: 1.2rem;
+      letter-spacing: 0.3px;
+    }
+
+    /* =========================================================
+       6. MÀN HÌNH 2: BỨC THƯ TÌNH TONE ĐỎ MẬN (ENVELOPE SCREEN)
+       ========================================================= */
+    .envelope-screen {
+      perspective: 1000px;
+    }
+
+    .envelope-wrapper {
+      position: relative;
+      width: 290px;
+      height: 200px;
+      margin: 28px auto 10px;
+      cursor: pointer;
+      transition: transform 0.4s ease;
+    }
+
+    .envelope-wrapper:hover {
+      transform: translateY(-5px);
+    }
+
+    .envelope-base {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(145deg, #3d0a13 0%, #29060c 100%);
+      border: 1px solid rgba(255, 105, 180, 0.35);
+      border-radius: 12px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.85), 0 0 30px rgba(139, 0, 0, 0.4);
+      overflow: hidden;
+    }
+
+    /* Các nếp gấp thư */
+    .envelope-pocket {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 145px solid #4a0e17;
+      border-right: 145px solid #4a0e17;
+      border-bottom: 110px solid #5a111e;
+      border-top: 90px solid transparent;
+      z-index: 3;
+      filter: drop-shadow(0 -3px 8px rgba(0, 0, 0, 0.5));
+    }
+
+    /* Nắp gập phía trên */
+    .envelope-flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 145px solid transparent;
+      border-right: 145px solid transparent;
+      border-top: 115px solid #6b1124;
+      transform-origin: top center;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 4;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.6));
+    }
+
+    /* Lá thư nhỏ bên trong thò ra khi mở */
+    .letter-preview {
+      position: absolute;
+      top: 25px;
+      left: 20px;
+      width: 250px;
+      height: 155px;
+      background: #fff8f8;
+      border-radius: 8px;
+      z-index: 2;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .letter-preview-heart {
+      font-size: 2.2rem;
+      color: var(--plum-main);
+      animation: heartBeat 1.4s infinite;
+    }
+
+    /* Con dấu sáp đỏ mận niêm phong */
+    .wax-seal {
+      position: absolute;
+      top: 85px;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 48px;
+      height: 48px;
+      background: radial-gradient(circle, #b31b3b 0%, #670014 70%, #4a0e17 100%);
+      border-radius: 50%;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7), 0 0 15px rgba(255, 105, 180, 0.4);
+      border: 2px solid rgba(255, 182, 193, 0.5);
+      transition: transform 0.4s ease, opacity 0.4s ease;
+    }
+
+    .wax-seal span {
+      font-size: 1.25rem;
+      color: #ffd700;
+      text-shadow: 0 0 6px rgba(255, 215, 0, 0.8);
+    }
+
+    /* Trạng thái mở phong bì */
+    .envelope-wrapper.open .envelope-flap {
+      transform: rotateX(180deg);
+      z-index: 1;
+    }
+
+    .envelope-wrapper.open .wax-seal {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.5);
+    }
+
+    .envelope-wrapper.open .letter-preview {
+      transform: translateY(-85px);
+    }
+
+    .envelope-hint {
+      margin-top: 25px;
+      font-size: 0.98rem;
+      color: var(--pink-soft);
+      text-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+      animation: pulseText 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseText {
+      0%, 100% { opacity: 0.75; transform: scale(0.99); }
+      50% { opacity: 1; transform: scale(1.02); }
+    }
+
+    /* =========================================================
+       7. MÀN HÌNH 3: 5 THÔNG ĐIỆP TÌNH YÊU (HỖ TRỢ VĂN BẢN DÀI & LƯỚT XUỐNG)
+       ========================================================= */
+    .message-card {
+      background: var(--bg-dark-card);
+      border: 1px solid rgba(255, 105, 180, 0.3);
+      border-radius: 26px;
+      padding: 24px 20px 24px;
+      width: 100%;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.85), 0 0 25px rgba(139, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-sizing: border-box;
+    }
+
+    /* Thanh tiến trình 5 bước */
+    .progress-bar-container {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      padding: 0 6px;
+      flex-shrink: 0;
+    }
+
+    .step-badge {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--pink-soft);
+      background: rgba(103, 0, 20, 0.55);
+      border: 1px solid rgba(255, 105, 180, 0.35);
+      border-radius: 20px;
+      padding: 3px 12px;
+      text-shadow: 0 0 8px var(--pink-neon);
+    }
+
+    .progress-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .dot.active {
+      background: var(--pink-neon);
+      box-shadow: 0 0 10px var(--pink-neon), 0 0 16px var(--pink-hot);
+      transform: scale(1.25);
+    }
+
+    .dot.completed {
+      background: var(--plum-main);
+      box-shadow: 0 0 6px var(--plum-glow);
+    }
+
+    /* Khung ảnh minh họa từng thông điệp */
+    .message-img-container {
+      position: relative;
+      width: 100%;
+      height: 175px;
+      max-height: 25vh;
+      border-radius: 18px;
+      overflow: hidden;
+      margin-bottom: 18px;
+      background: rgba(25, 12, 18, 0.8);
+      border: 1px solid rgba(255, 105, 180, 0.25);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .message-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transform: scale(1.05);
+      transition: opacity 0.45s ease, transform 0.45s ease;
+    }
+
+    .message-img.loaded {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Khung chữ gõ từng thông điệp - Tự động dãn dài & hỗ trợ xuống dòng */
+    .message-text-box {
+      width: 100%;
+      min-height: 75px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 4px;
+      cursor: pointer;
+    }
+
+    .message-text {
+      width: 100%;
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: #fff;
+      font-weight: 500;
+      text-shadow: 0 0 8px rgba(255, 105, 180, 0.5);
+      white-space: pre-line; /* Hỗ trợ xuống dòng khi người dùng viết dài nhiều đoạn */
+      word-break: break-word;
+      text-align: left;
+    }
+
+    /* =========================================================
+       8. MÀN HÌNH 4: LỜI KẾT ĐẶC BIỆT & PHÁO HOA (FINAL SCREEN)
+       ========================================================= */
+    .final-card {
+      background: var(--bg-dark-card);
+      border: 1.5px solid rgba(255, 105, 180, 0.4);
+      border-radius: 28px;
+      padding: 28px 22px 26px;
+      width: 100%;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 15px 45px rgba(0, 0, 0, 0.9), 0 0 35px rgba(255, 20, 147, 0.35);
+      position: relative;
+      z-index: 10;
+      box-sizing: border-box;
+    }
+
+    .final-img-container {
+      width: 110px;
+      height: 110px;
+      margin: 0 auto 16px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid var(--pink-neon);
+      box-shadow: 0 0 20px rgba(255, 105, 180, 0.6), 0 0 35px var(--plum-glow);
+      flex-shrink: 0;
+    }
+
+    .final-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .final-text {
+      width: 100%;
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: #fefefe;
+      text-shadow: 0 0 10px rgba(255, 105, 180, 0.4);
+      margin-bottom: 20px;
+      white-space: pre-line;
+      word-break: break-word;
+      text-align: left;
+    }
+
+    /* =========================================================
+       9. TIỆN ÍCH HIỆU ỨNG VÀ HOẠT HỌA PHỤ TRỢ
+       ========================================================= */
+    @keyframes heartBeat {
+      0%, 100% { transform: scale(1); }
+      14% { transform: scale(1.15); }
+      28% { transform: scale(1); }
+      42% { transform: scale(1.12); }
+      70% { transform: scale(1); }
+    }
+
+    /* Tối ưu màn hình cực nhỏ (iPhone 5/SE đời cũ <= 360px) */
+    @media (max-width: 360px) {
+      .cursive-title { font-size: 1.85rem; }
+      .message-text { font-size: 0.98rem; }
+      .message-img-container { height: 150px; }
+      .envelope-wrapper { transform: scale(0.9); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nút Bật / Tắt Âm Nhạc Nền Lãng Mạn (Tùy chọn) -->
+  <button id="btnMusic" class="music-btn" title="Bật/Tắt nhạc nền lãng mạn">
+    <span id="musicIcon">🎵</span>
+  </button>
+  <audio id="bgMusic" loop preload="none">
+    <source src="https://assets.mixkit.co/music/preview/mixkit-romantic-moment-heart-touching-piano-song-684.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Canvas hiển thị trái tim bay nền & Pháo hoa tình yêu -->
+  <canvas id="canvasBackground"></canvas>
+
+  <!-- Vùng chứa các màn hình giao diện (Cho phép cuộn mượt mà khi nội dung dài) -->
+  <main class="app-container">
+
+    <!-- ==========================================
+         MÀN HÌNH 1: LỄ MỞ ĐẦU (INTRO SCREEN)
+         ========================================== -->
+    <section id="screenIntro" class="screen active">
+      <div class="intro-card">
+        <div class="avatar-wrapper">
+          <div class="avatar-glow"></div>
+          <img id="introChibiImg" class="intro-img" alt="Cute Chibi Love" src="" />
+        </div>
+        
+        <div class="intro-text-box">
+          <h2 id="introTypewriterText" class="neon-text"></h2>
+        </div>
+
+        <button id="btnStart" class="glow-btn">
+          <span id="btnStartText">Bắt đầu khám phá</span> ✨
+        </button>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         MÀN HÌNH 2: BỨC THƯ TÌNH (ENVELOPE SCREEN)
+         ========================================== -->
+    <section id="screenEnvelope" class="screen envelope-screen">
+      <h1 class="cursive-title">Thư Gửi Win💌</h1>
+      
+      <div id="envelopeElement" class="envelope-wrapper" title="Chạm để mở bức thư">
+        <div class="envelope-base"></div>
+        <div class="letter-preview">
+          <div class="letter-preview-heart">💖</div>
+          <p style="color: #670014; font-size: 0.85rem; font-weight: 700; margin-top: 5px;">Món quà bí mật</p>
+        </div>
+        <div class="envelope-pocket"></div>
+        <div class="envelope-flap"></div>
+        <div class="wax-seal">
+          <span>❤️</span>
+        </div>
+      </div>
+
+      <p id="envelopeHintText" class="envelope-hint">Chạm vào phong thư để mở nhé ✨</p>
+    </section>
+
+    <!-- ==========================================
+         MÀN HÌNH 3: 5 THÔNG ĐIỆP TÌNH YÊU
+         ========================================== -->
+    <section id="screenMessages" class="screen">
+      <div class="message-card">
+        <!-- Tiến trình 5 thông điệp -->
+        <div class="progress-bar-container">
+          <div id="stepBadge" class="step-badge">Thông điệp 1 / 5</div>
+          <div class="progress-dots">
+            <span class="dot active"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+        </div>
+
+        <!-- Ảnh minh họa vui vẻ / dễ thương -->
+        <div class="message-img-container">
+          <img id="messageCurrentImg" class="message-img" alt="Love Message Illustration" src="" />
+        </div>
+
+        <!-- Khung gõ chữ Typewriter cho từng thông điệp -->
+        <div class="message-text-box" title="Chạm để hiển thị nhanh toàn bộ chữ">
+          <p id="messageTypewriterText" class="message-text"></p>
+        </div>
+
+        <!-- Nút chuyển sang câu tiếp theo -->
+        <button id="btnNextMessage" class="glow-btn">
+          <span id="btnNextText">Tiếp theo</span> ➜
+        </button>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         MÀN HÌNH 4: LỜI KẾT ĐẶC BIỆT & PHÁO HOA
+         ========================================== -->
+    <section id="screenFinal" class="screen">
+      <div class="final-card">
+        <div class="final-img-container">
+          <img id="finalImg" class="final-img" alt="Forever with you" src="" />
+        </div>
+
+        <h1 id="finalTitle" class="cursive-title">Gửi người tớ yêu nhất 🌹</h1>
+        
+        <div class="message-text-box" style="min-height: 80px;" title="Chạm để hiển thị nhanh">
+          <p id="finalTypewriterText" class="final-text"></p>
+        </div>
+
+        <button id="btnRestart" class="glow-btn" style="margin-top: 10px;">
+          <span id="btnRestartText">Xem lại từ đầu</span> 🔄
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    /* =========================================================================
+       💖 CẤU HÌNH DÀNH CHO BẠN - DỄ DÀNG CHỈNH SỬA THÔNG ĐIỆP & ẢNH DƯỚI ĐÂY 💖
+       ========================================================================= */
+    const LOVE_CONFIG = {
+      // 1. MÀN HÌNH CHÀO MỪNG (Màn hình 1)
+      intro: {
+        text: "Có một món quà dành cho ai đóa 💖",
+        image: "https://i.giphy.com/media/cLS1cfxvGOPVpf9g3y/giphy.gif",
+        buttonText: "Gét goooo"
+      },
+
+      // 2. MÀN HÌNH BỨC THƯ (Màn hình 2)
+      envelope: {
+        hintText: "chọt vào bức thư để mở nhó ✨"
+      },
+
+      // 3. DANH SÁCH 5 CÂU THÔNG ĐIỆP TÌNH YÊU (Màn hình 3)
+      // (Bạn có thể ghi dài thoải mái, dùng \n để ngắt dòng/đoạn văn, người yêu có thể cuộn xuống đọc và bấm nút Tiếp theo)
+      messages: [
+        "Chào anhh, có lẽ anh đã bic tui gòi nhưng mà thoi kệ i, có đôi điều tui muốn gửi cho anh nò ✨",
+        "Sau thời gian 1 tháng hơn vừa qua chị đã bên em nói chuyện với em tiếp xúc với em đã nhiều, như đã biết sắp tới em có những gì cần cố gắng để vượt qua bao gồm những gì mệt mỏi sắp tới nên có lẽ chị biết em cần gì. Không gì là bằng sự đồng hành của chị lúc này đối với em! 🌸",
+        "Như em đã biết trước đó chị thích nhất điều gì ở em..nhưng thoi chị vẫn nói lại, đó là chị thích nhất là khi thấy em cười, một ngày không thấy em cười là chị nhớ mún chớt lun, nên để bảo vệ nụ cười của em, chị không ngại làm đủ trò cho em vui, lắng nghe em khi em cần, giải thích cho em về những gì em không hiểu, chờ đợi em khi em bận, làm tất cả mọi thứ để bảo vệ nụ cười của em. ☕🍰",
+        "Để mà nói tại sao chị lại có động lực có thể đồng hành cùng em như vậy thì thực sự khó có thể diễn tả được cảm xúc của chị đối với những việc em làm cho chị tới bây giờ. Em là người đặc biệt đối với chị, là người đối xử với chị theo cách đặc biệt, em như một làn gió mới mẻ với chị, chị còn không hay biết từ khi nào chị tháo mất lớp đề phòng với em lun mà hehe=)), nhiều khi nhắc lại vẫn thấy kì diệu vãi ra. Nhưng vì những gì em đối xử với chị, cách em quan tâm để ý chị dù là những chi tiết nhỏ thôi em cũng nhớ, chị thực sự bị em cảm hóa sau thời gian vừa qua, chị tin em chị tin mối quan hệ của hai đứa, có thể chị không giỏi thể hiện không giỏi diễn đạt một cái gì đó thành lời hay qua những dòng này, nhưng chị chỉ muốn em biết những gì chị làm là đều muốn em vui, muốn em biết bây giờ người luôn ở sau lưng cổ vũ cho em là chị, cho dù ngoài kia không ai công nhận em hoặc dù có đi chăng nữa thì chị vẫn sẽ luôn công nhận từng cố gắng từng nỗ lực mỗi ngày của em, chị sẽ luôn ủng hộ những bước đường em đi, tôn trọng ý kiến suy nghĩ của em. Không ai thì để chị, cứ vững tinh thần nhó, muốn khóc thì cứ về khóc với chị. 🫂❤️",
+        "Nói tóm gọn lại, chị muốn em ở trong cuộc đời chị và chị cũng muốn chị ở trong cuộc đời em, liệu em có muốn chị tồn tại ở tương lai em hong nhỉ, nếu cóa thì nhắn đồng ý nhó hihi, 3 chữ càng tốt nà. Moa Moa, hãy cố gắng lên nha, chị luôn bên em, muốn khóc hay thấy mệt thì về với chị, chị là chỗ dựa tinh thần của em thoi chứ hiện giờ chưa có gì hơn:'), thông cảm cho bà chị này nhóooo, dỗ xong ròi mình làm tiếp chứ hong bỏ cuộc nghe chưa. Cố lơn<3' 💫"
+      ],
+
+      // 4. DANH SÁCH 5 LINK ẢNH MINH HỌA VUI VẺ/DỄ THƯƠNG TƯƠNG ỨNG CHO 5 CÂU TRÊN
+      images: [
+        "https://i.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif", // Bé mèo cute chào đón
+        "https://i.giphy.com/media/ICOgUNjpvO0PC/giphy.gif", // Nụ cười dễ thương
+        "https://i.giphy.com/media/UVk5yzljef0kGiayL1/giphy.gif", // Đôi bạn ngọt ngào
+        "https://i.giphy.com/media/vFKqnCdLPNOKc/giphy.gif", // Vỗ về ấm áp
+        "https://i.giphy.com/media/TDFcnpP6Esuqc/giphy.gif"  // Trái tim đong đầy
+      ],
+
+      // 5. MÀN HÌNH LỜI KẾT ĐẶC BIỆT & PHÁO HOA (Màn hình 4)
+      final: {
+        title: "Gửi người tui mê🌹",
+        message: "Cảm ơn iem đã đọc hết mớ này.\nTình cảm này tui giấu luôn há há, hôm nay, ngày mai và mãi mãi về sau hãy cho tui nhoi bên anh nhíe. Chúc cho nụ cười của anh ngày càng chói sángggg! Win và Minh Mon mãi keoooo❤️",
+        image: "https://i.giphy.com/media/IzXiddo2twMmdmU8Lv/giphy.gif",
+        restartBtnText: "Xem lại từ đầu"
+      },
+
+      // 6. NHẠC NỀN TÙY CHỌN (Để "" nếu không muốn hiển thị nút nhạc)
+      musicUrl: "https://assets.mixkit.co/music/preview/mixkit-romantic-moment-heart-touching-piano-song-684.mp3"
+    };
+
+    /* =========================================================
+       SVG DỰ PHÒNG AN TOÀN (FALLBACK) PHÒNG KHI KHÔNG CÓ MẠNG HOẶC LINK LỖI
+       ========================================================= */
+    const SVG_FALLBACK = "data:image/svg+xml;utf8," + encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+        <defs>
+          <radialGradient id="g" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#ff69b4" />
+            <stop offset="100%" stop-color="#8b0000" />
+          </radialGradient>
+        </defs>
+        <rect width="200" height="200" fill="#180a12" rx="20"/>
+        <path d="M100,150 C100,150 40,110 40,65 C40,40 65,30 85,45 C100,56 100,65 100,65 C100,65 100,56 115,45 C135,30 160,40 160,65 C160,110 100,150 100,150 Z" fill="url(#g)" />
+        <circle cx="80" cy="70" r="5" fill="#fff"/>
+        <circle cx="120" cy="70" r="5" fill="#fff"/>
+        <path d="M92,85 Q100,92 108,85" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>
+      </svg>
+    `);
+
+    // Gán ảnh an toàn tự động nếu link ngoài bị lỗi
+    function attachSafeImage(imgElement, src) {
+      imgElement.onerror = () => { imgElement.src = SVG_FALLBACK; };
+      imgElement.src = src;
+    }
+
+    /* =========================================================
+       CANVAS: TRÁI TIM BAY LƠ LỬNG & PHÁO HOA TRÁI TIM BÙNG NỔ
+       ========================================================= */
+    const canvas = document.getElementById('canvasBackground');
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    // Mảng chứa các trái tim bay nhẹ ở sảnh chính
+    const floatingHearts = [];
+    const MAX_FLOATING_HEARTS = 38;
+    const HEART_COLORS = ['#8B0000', '#670014', '#9E1B32', '#FF69B4', '#FF1493', '#FFB6C1'];
+
+    class FloatingHeart {
+      constructor() {
+        this.reset(true);
+      }
+      reset(initial = false) {
+        this.x = Math.random() * width;
+        this.y = initial ? Math.random() * height : height + 20;
+        this.size = Math.random() * 12 + 8; // 8px -> 20px
+        this.speedY = Math.random() * 0.7 + 0.35;
+        this.speedX = (Math.random() - 0.5) * 0.4;
+        this.color = HEART_COLORS[Math.floor(Math.random() * HEART_COLORS.length)];
+        this.alpha = Math.random() * 0.6 + 0.25;
+        this.alphaSpeed = (Math.random() * 0.015 + 0.005) * (Math.random() < 0.5 ? 1 : -1);
+        this.swing = Math.random() * Math.PI * 2;
+        this.swingSpeed = Math.random() * 0.02 + 0.01;
+      }
+      update() {
+        this.y -= this.speedY;
+        this.swing += this.swingSpeed;
+        this.x += Math.sin(this.swing) * 0.4 + this.speedX;
+        this.alpha += this.alphaSpeed;
+        if (this.alpha >= 0.85 || this.alpha <= 0.15) {
+          this.alphaSpeed = -this.alphaSpeed;
+        }
+        if (this.y < -30 || this.x < -30 || this.x > width + 30) {
+          this.reset(false);
+        }
+      }
+      draw(c) {
+        c.save();
+        c.translate(this.x, this.y);
+        c.globalAlpha = Math.max(0, Math.min(1, this.alpha));
+        c.fillStyle = this.color;
+        c.shadowColor = this.color;
+        c.shadowBlur = 10;
+        
+        // Vẽ hình trái tim bằng Bezier Curve
+        const s = this.size / 15;
+        c.beginPath();
+        c.moveTo(0, 0);
+        c.bezierCurveTo(-s * 5, -s * 5, -s * 10, s * 2, 0, s * 10);
+        c.bezierCurveTo(s * 10, s * 2, s * 5, -s * 5, 0, 0);
+        c.fill();
+        c.restore();
+      }
+    }
+
+    for (let i = 0; i < MAX_FLOATING_HEARTS; i++) {
+      floatingHearts.push(new FloatingHeart());
+    }
+
+    /* Hệ thống Pháo hoa Trái tim (Heart Fireworks) */
+    let fireworksActive = false;
+    const fireworkRockets = [];
+    const fireworkParticles = [];
+
+    class Rocket {
+      constructor(targetX, targetY) {
+        this.x = targetX ? (targetX + (Math.random() - 0.5) * 50) : (Math.random() * (width * 0.6) + width * 0.2);
+        this.y = height + 10;
+        this.targetX = targetX || (Math.random() * (width * 0.7) + width * 0.15);
+        this.targetY = targetY || (Math.random() * (height * 0.42) + height * 0.15);
+        this.speed = Math.random() * 3 + 7.5;
+        const angle = Math.atan2(this.targetY - this.y, this.targetX - this.x);
+        this.vx = Math.cos(angle) * this.speed;
+        this.vy = Math.sin(angle) * this.speed;
+        this.color = HEART_COLORS[Math.floor(Math.random() * HEART_COLORS.length)];
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.vy < 0 && this.y <= this.targetY) {
+          return true; // Đến vị trí nổ
+        }
+        return false;
+      }
+      draw(c) {
+        c.save();
+        c.fillStyle = '#ff80bf';
+        c.shadowColor = '#ff1493';
+        c.shadowBlur = 12;
+        c.beginPath();
+        c.arc(this.x, this.y, 2.5, 0, Math.PI * 2);
+        c.fill();
+        c.restore();
+      }
+    }
+
+    class HeartParticle {
+      constructor(originX, originY, angle, speed, color) {
+        this.originX = originX;
+        this.originY = originY;
+        this.x = originX;
+        this.y = originY;
+        
+        // Phương trình toán học hình trái tim:
+        // x = 16 * sin^3(t)
+        // y = -(13 * cos(t) - 5 * cos(2t) - 2 * cos(3t) - cos(4t))
+        const t = angle;
+        const heartX = 16 * Math.pow(Math.sin(t), 3);
+        const heartY = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+        
+        const scale = (speed * 0.23);
+        this.vx = heartX * scale * 0.35;
+        this.vy = heartY * scale * 0.35;
+        this.color = color;
+        this.alpha = 1;
+        this.decay = Math.random() * 0.015 + 0.01;
+        this.gravity = 0.04;
+      }
+      update() {
+        this.vx *= 0.96;
+        this.vy *= 0.96;
+        this.vy += this.gravity;
+        this.x += this.vx;
+        this.y += this.vy;
+        this.alpha -= this.decay;
+        return this.alpha <= 0;
+      }
+      draw(c) {
+        c.save();
+        c.globalAlpha = Math.max(0, this.alpha);
+        c.fillStyle = this.color;
+        c.shadowColor = this.color;
+        c.shadowBlur = 10;
+        c.beginPath();
+        c.arc(this.x, this.y, 2.2, 0, Math.PI * 2);
+        c.fill();
+        c.restore();
+      }
+    }
+
+    function createHeartExplosion(x, y) {
+      const numParticles = 68;
+      const baseColor = HEART_COLORS[Math.floor(Math.random() * HEART_COLORS.length)];
+      for (let i = 0; i < numParticles; i++) {
+        const angle = (Math.PI * 2 / numParticles) * i;
+        const speed = Math.random() * 2 + 5.2;
+        fireworkParticles.push(new HeartParticle(x, y, angle, speed, baseColor));
+      }
+    }
+
+    let lastRocketTime = 0;
+    function animateCanvas(timestamp) {
+      ctx.clearRect(0, 0, width, height);
+
+      // Cập nhật và vẽ trái tim bay lơ lửng
+      for (let i = 0; i < floatingHearts.length; i++) {
+        floatingHearts[i].update();
+        floatingHearts[i].draw(ctx);
+      }
+
+      // Khi ở chế độ pháo hoa bùng nổ
+      if (fireworksActive) {
+        if (!lastRocketTime || timestamp - lastRocketTime > 650) {
+          fireworkRockets.push(new Rocket());
+          lastRocketTime = timestamp;
+        }
+
+        // Cập nhật rockets bay lên
+        for (let i = fireworkRockets.length - 1; i >= 0; i--) {
+          const r = fireworkRockets[i];
+          r.draw(ctx);
+          if (r.update()) {
+            createHeartExplosion(r.x, r.y);
+            fireworkRockets.splice(i, 1);
+          }
+        }
+
+        // Cập nhật các hạt pháo hoa hình trái tim bung nở
+        for (let i = fireworkParticles.length - 1; i >= 0; i--) {
+          const p = fireworkParticles[i];
+          p.draw(ctx);
+          if (p.update()) {
+            fireworkParticles.splice(i, 1);
+          }
+        }
+      }
+
+      requestAnimationFrame(animateCanvas);
+    }
+    requestAnimationFrame(animateCanvas);
+
+    // Chạm vào màn hình kết thúc để tự bắn pháo hoa tại điểm chạm
+    window.addEventListener('pointerdown', (e) => {
+      if (fireworksActive && e.target.tagName !== 'BUTTON') {
+        createHeartExplosion(e.clientX, e.clientY);
+      }
+    });
+
+    /* =========================================================
+       HÀM HIỆU ỨNG GÕ CHỮ (TYPEWRITER EFFECT VỚI GLOWING TEXT)
+       ========================================================= */
+    let currentTypewriterTimer = null;
+    let isCurrentlyTyping = false;
+
+    function runTypewriter(text, targetElement, speed = 36, callback = null) {
+      if (currentTypewriterTimer) {
+        clearTimeout(currentTypewriterTimer);
+      }
+      
+      targetElement.innerHTML = '';
+      const textSpan = document.createElement('span');
+      const cursor = document.createElement('span');
+      cursor.className = 'typewriter-cursor';
+      
+      targetElement.appendChild(textSpan);
+      targetElement.appendChild(cursor);
+
+      isCurrentlyTyping = true;
+      let charIndex = 0;
+
+      function typeNextChar() {
+        if (charIndex < text.length) {
+          textSpan.textContent += text.charAt(charIndex);
+          charIndex++;
+          currentTypewriterTimer = setTimeout(typeNextChar, speed);
+        } else {
+          isCurrentlyTyping = false;
+          // Sau khi gõ xong, cho con trỏ mờ dần sau 2.5s
+          setTimeout(() => {
+            cursor.style.transition = 'opacity 0.6s';
+            cursor.style.opacity = '0';
+          }, 2500);
+          if (typeof callback === 'function') {
+            callback();
+          }
+        }
+      }
+
+      typeNextChar();
+    }
+
+    // Hiển thị nhanh toàn bộ chữ nếu người dùng bấm tiếp hoặc click vào text
+    function finishTypingImmediately(text, targetElement, callback = null) {
+      if (currentTypewriterTimer) {
+        clearTimeout(currentTypewriterTimer);
+      }
+      isCurrentlyTyping = false;
+      targetElement.innerHTML = `<span>${text}</span>`;
+      if (typeof callback === 'function') {
+        callback();
+      }
+    }
+
+
+    /* =========================================================
+       ĐIỀU HƯỚNG MÀN HÌNH & XỬ LÝ SỰ KIỆN TƯƠNG TÁC
+       ========================================================= */
+    const screenIntro = document.getElementById('screenIntro');
+    const screenEnvelope = document.getElementById('screenEnvelope');
+    const screenMessages = document.getElementById('screenMessages');
+    const screenFinal = document.getElementById('screenFinal');
+
+    const introChibiImg = document.getElementById('introChibiImg');
+    const introTypewriterText = document.getElementById('introTypewriterText');
+    const btnStart = document.getElementById('btnStart');
+    const btnStartText = document.getElementById('btnStartText');
+
+    const envelopeElement = document.getElementById('envelopeElement');
+    const envelopeHintText = document.getElementById('envelopeHintText');
+
+    const stepBadge = document.getElementById('stepBadge');
+    const dots = document.querySelectorAll('.progress-dots .dot');
+    const messageCurrentImg = document.getElementById('messageCurrentImg');
+    const messageTypewriterText = document.getElementById('messageTypewriterText');
+    const btnNextMessage = document.getElementById('btnNextMessage');
+    const btnNextText = document.getElementById('btnNextText');
+
+    const finalImg = document.getElementById('finalImg');
+    const finalTitle = document.getElementById('finalTitle');
+    const finalTypewriterText = document.getElementById('finalTypewriterText');
+    const btnRestart = document.getElementById('btnRestart');
+    const btnRestartText = document.getElementById('btnRestartText');
+
+    // Nút và Audio Nhạc Nền
+    const btnMusic = document.getElementById('btnMusic');
+    const bgMusic = document.getElementById('bgMusic');
+
+    let currentMessageIndex = 0;
+
+    // Chuyển màn hình mượt mà và tự động cuộn lên đầu trang
+    function showScreen(screenToShow) {
+      const allScreens = [screenIntro, screenEnvelope, screenMessages, screenFinal];
+      allScreens.forEach(s => {
+        s.classList.remove('active');
+        s.style.display = 'none';
+      });
+      
+      screenToShow.style.display = 'flex';
+      // Kích hoạt animation mượt mà
+      void screenToShow.offsetWidth;
+      requestAnimationFrame(() => {
+        screenToShow.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+
+    /* 1. KHỞI ĐỘNG MÀN HÌNH 1 (INTRO) */
+    function initIntroScreen() {
+      fireworksActive = false;
+      currentMessageIndex = 0;
+      
+      // Gán nội dung từ cấu hình
+      btnStartText.textContent = LOVE_CONFIG.intro.buttonText || "Bắt đầu khám phá";
+      envelopeHintText.textContent = LOVE_CONFIG.envelope.hintText || "Chạm vào phong thư để mở nhé ✨";
+      attachSafeImage(introChibiImg, LOVE_CONFIG.intro.image);
+
+      showScreen(screenIntro);
+
+      // Chạy hiệu ứng gõ phím cho câu chào mừng
+      setTimeout(() => {
+        runTypewriter(LOVE_CONFIG.intro.text, introTypewriterText, 45);
+      }, 400);
+    }
+
+    // Bấm nút "Bắt đầu" ở màn hình 1
+    btnStart.addEventListener('click', () => {
+      // Nếu nhạc chưa bật và có link nhạc, thử phát nhạc nhẹ nhàng
+      if (LOVE_CONFIG.musicUrl && bgMusic.paused) {
+        bgMusic.play().then(() => {
+          btnMusic.classList.add('playing');
+        }).catch(() => { /* Trình duyệt có thể yêu cầu click trực tiếp vào nút nhạc */ });
+      }
+
+      showScreen(screenEnvelope);
+      envelopeElement.classList.remove('open');
+    });
+
+    /* 2. MÀN HÌNH 2: BẤM MỞ BỨC THƯ */
+    envelopeElement.addEventListener('click', () => {
+      if (envelopeElement.classList.contains('open')) return;
+      
+      envelopeElement.classList.add('open');
+      
+      // Chờ mở phong bì và lá thư trượt lên (1.15s) rồi chuyển sang màn hình 5 thông điệp
+      setTimeout(() => {
+        startMessageFlow(0);
+      }, 1150);
+    });
+
+    /* 3. MÀN HÌNH 3: XỬ LÝ 5 THÔNG ĐIỆP */
+    function startMessageFlow(index) {
+      currentMessageIndex = index;
+      showScreen(screenMessages);
+      displayMessage(currentMessageIndex);
+    }
+
+    function displayMessage(index) {
+      // Tự động cuộn mượt lên đầu card để người dùng đọc từ đầu câu mới
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Cập nhật số bước và chỉ báo tiến trình
+      stepBadge.textContent = `Thông điệp ${index + 1} / ${LOVE_CONFIG.messages.length}`;
+      dots.forEach((dot, idx) => {
+        dot.className = 'dot';
+        if (idx === index) {
+          dot.classList.add('active');
+        } else if (idx < index) {
+          dot.classList.add('completed');
+        }
+      });
+
+      // Cập nhật text nút "Tiếp theo"
+      if (index === LOVE_CONFIG.messages.length - 1) {
+        btnNextText.textContent = "Điều bất ngờ cuối cùng 🎁";
+      } else {
+        btnNextText.textContent = "Tiếp theo";
+      }
+
+      // Đổi ảnh với hiệu ứng fade
+      messageCurrentImg.classList.remove('loaded');
+      setTimeout(() => {
+        attachSafeImage(messageCurrentImg, LOVE_CONFIG.images[index]);
+        messageCurrentImg.onload = () => {
+          messageCurrentImg.classList.add('loaded');
+        };
+      }, 140);
+
+      // Hiệu ứng chữ gõ cho thông điệp hiện tại
+      const currentText = LOVE_CONFIG.messages[index];
+      runTypewriter(currentText, messageTypewriterText, 34);
+    }
+
+    // Bấm nút "Tiếp theo"
+    btnNextMessage.addEventListener('click', () => {
+      // Nếu đang gõ mà người dùng bấm nút, hoàn thành chữ ngay lập tức
+      if (isCurrentlyTyping) {
+        finishTypingImmediately(LOVE_CONFIG.messages[currentMessageIndex], messageTypewriterText);
+        return;
+      }
+
+      if (currentMessageIndex < LOVE_CONFIG.messages.length - 1) {
+        currentMessageIndex++;
+        displayMessage(currentMessageIndex);
+      } else {
+        // Đã xem hết 5 thông điệp -> Chuyển sang màn hình Lời kết & Pháo hoa bùng nổ!
+        showFinalScreen();
+      }
+    });
+
+    // Chạm vào chữ để hiển thị nhanh nếu người dùng đọc nhanh
+    messageTypewriterText.addEventListener('click', () => {
+      if (isCurrentlyTyping) {
+        finishTypingImmediately(LOVE_CONFIG.messages[currentMessageIndex], messageTypewriterText);
+      }
+    });
+
+    /* 4. MÀN HÌNH 4: LỜI KẾT ĐẶC BIỆT & PHÁO HOA TRÁI TIM */
+    function showFinalScreen() {
+      showScreen(screenFinal);
+      
+      // Kích hoạt pháo hoa trái tim bùng nổ liên tục
+      fireworksActive = true;
+      for (let i = 0; i < 3; i++) {
+        setTimeout(() => {
+          fireworkRockets.push(new Rocket());
+        }, i * 220);
+      }
+
+      // Cập nhật thông tin lời kết
+      finalTitle.textContent = LOVE_CONFIG.final.title || "Gửi người tớ yêu nhất 🌹";
+      btnRestartText.textContent = LOVE_CONFIG.final.restartBtnText || "Xem lại từ đầu";
+      attachSafeImage(finalImg, LOVE_CONFIG.final.image);
+
+      // Gõ chữ lời kết ngọt ngào
+      setTimeout(() => {
+        runTypewriter(LOVE_CONFIG.final.message, finalTypewriterText, 36);
+      }, 400);
+    }
+
+    // Chạm vào chữ lời kết để hiện nhanh
+    finalTypewriterText.addEventListener('click', () => {
+      if (isCurrentlyTyping) {
+        finishTypingImmediately(LOVE_CONFIG.final.message, finalTypewriterText);
+      }
+    });
+
+    // Bấm "Xem lại từ đầu"
+    btnRestart.addEventListener('click', () => {
+      initIntroScreen();
+    });
+
+    /* 5. ĐIỀU KHIỂN NHẠC NỀN */
+    if (LOVE_CONFIG.musicUrl) {
+      bgMusic.querySelector('source').src = LOVE_CONFIG.musicUrl;
+      bgMusic.load();
+      btnMusic.addEventListener('click', () => {
+        if (bgMusic.paused) {
+          bgMusic.play();
+          btnMusic.classList.add('playing');
+        } else {
+          bgMusic.pause();
+          btnMusic.classList.remove('playing');
+        }
+      });
+    } else {
+      btnMusic.style.display = 'none';
+    }
+
+    /* TỰ ĐỘNG KHỞI CHẠY KHI TẢI TRANG */
+    window.addEventListener('DOMContentLoaded', () => {
+      initIntroScreen();
+    });
+  </script>
+</body>
+</html>
